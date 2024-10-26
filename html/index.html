@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Edson</title>
+    
+    <!-- Enlace al archivo CSS para estilos -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Título principal de la calculadora -->
+    <h1>Calculadora Edson</h1>
+
+    <!-- Comienzo del formulario para las operaciones de la calculadora -->
+    <form action="cgi-bin/calculadora.pl" method="post">
+        <div>
+            <!-- Pantalla de visualización de la expresión -->
+            <input type="text" id="pantalla" name="expresion" disabled>
+        </div>
