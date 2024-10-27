@@ -9,3 +9,9 @@ body {
     height: 100vh; /* Altura de la ventana */
     margin: 0; /* Sin margen */
 }
+/* Sección 2: Estilos del Título */
+h1 {
+    margin-bottom: 20px; /* Espacio debajo del título */
+    color: #4CAF50; /* Color del título */
+    text-align: center; /* Alineación centrada */
+}
