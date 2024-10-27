@@ -13,10 +13,10 @@
     <h1>Calculadora Edson</h1>
 
     <!-- Comienzo del formulario para las operaciones de la calculadora -->
-    <form action="cgi-bin/calculadora.pl" method="post">
+    <form id="calculadora" action="cgi-bin/calculadora.pl" method="post">
         <div>
             <!-- Pantalla de visualización de la expresión (editable) -->
-            <input type="text" id="pantalla" name="expresion" placeholder="Ingresa tu operación aquí">
+            <input type="text" id="pantalla" name="expresion" placeholder="Ingresa tu operación aquí" readonly>
         </div>
 
         <!-- Contenedor de botones de la calculadora -->
@@ -38,7 +38,8 @@
             <button type="button" onclick="agregarValor('^')">^</button>
             <button type="button" onclick="agregarValor('(')">(</button>
             <button type="button" onclick="agregarValor(')')">)</button>
-            <button type="submit">Calcular</button>
+            <button type="button" onclick="calcular()">Calcular</button>
+            <button type="button" onclick="limpiar()">Limpiar</button> <!-- Botón para limpiar la pantalla -->
         </div>
     </form>
 
@@ -50,13 +51,25 @@
             pantalla.value += valor;  // Añadir el valor al campo de pantalla
         }
 
+        // Función para limpiar la pantalla
+        function limpiar() {
+            document.getElementById('pantalla').value = ''; // Limpiar el campo de pantalla
+        }
+
+        // Función para calcular y enviar la expresión
+        function calcular() {
+            document.getElementById('calculadora').submit(); // Enviar el formulario
+        }
+
         // Capturar el evento de teclado
         document.addEventListener('keydown', function(event) {
             const teclasPermitidas = '0123456789+-*/^()'; // Teclas permitidas
             if (teclasPermitidas.includes(event.key)) {
                 agregarValor(event.key); // Agregar valor al campo de pantalla
             } else if (event.key === 'Enter') {
-                document.querySelector('form').submit(); // Enviar el formulario al presionar Enter
+                calcular(); // Calcular al presionar Enter
+            } else if (event.key === 'Escape') {
+                limpiar(); // Limpiar al presionar Escape
             }
         });
     </script>
