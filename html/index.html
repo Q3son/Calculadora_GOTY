@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora @teamQ3son</title>
-    <!-- Vincular el archivo CSS externo -->
-    <link rel="stylesheet" href="styles.css"> <!-- Cambia 'styles.css' si tu archivo tiene otro nombre o está en otra ruta -->
+    <link rel="stylesheet" href="styles.css"> <!-- Enlace al CSS externo -->
 </head>
 <body>
 
 <h1>Calculadora @teamQ3son</h1>
-<form action="calculadora.pl" method="get">
+<form action="cgi-bin/calculadora.pl" method="get">
     <div>
         <input type="text" id="pantalla" name="expresion" placeholder="Ingresa tu operación aquí" value="" readonly>
     </div>
@@ -30,16 +29,32 @@
         <button type="button" onclick="agregarValor('0')">0</button>
         <button type="button" onclick="agregarValor('/')">/</button>
         <button type="button" onclick="agregarValor('^')">^</button>
-        <button type="button" onclick="agregarValor('(')"> ( </button>
-        <button type="button" onclick="agregarValor(')')"> ) </button>
+        <button type="button" onclick="agregarValor('(')">(</button>
+        <button type="button" onclick="agregarValor(')')">)</button>
         <button type="submit">Calcular</button>
         <button type="button" onclick="limpiar()">Limpiar</button>
         <button type="button" onclick="retroceder()">←</button>
     </div>
-    <div id="mensajeError"></div> <!-- Se mantiene el div para mensajes de error -->
+    <div id="mensajeError" style="color: red; margin-top: 10px;"></div>
 </form>
 
 <script>
+    // Agregar evento para escuchar las teclas presionadas
+    document.addEventListener('keydown', function(event) {
+        const key = event.key;
+
+        // Solo permitir las teclas relevantes
+        if ("0123456789+-*/^()".includes(key)) {
+            agregarValor(key);
+        } else if (key === "Enter") {
+            document.querySelector('form').submit(); // Enviar el formulario al presionar Enter
+        } else if (key === "Backspace") {
+            retroceder(); // Retroceder si se presiona Backspace
+        } else if (key === "Escape") {
+            limpiar(); // Limpiar la pantalla si se presiona Escape
+        }
+    });
+
     function agregarValor(valor) {
         const pantalla = document.getElementById('pantalla');
         pantalla.value += valor;
