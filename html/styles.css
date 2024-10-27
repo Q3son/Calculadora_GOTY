@@ -23,3 +23,12 @@ form {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra sutil */
     width: 300px; /* Ancho fijo del formulario */
 }
+/* Sección 4: Estilos de la Pantalla */
+#pantalla {
+    width: 100%; /* Ancho completo */
+    padding: 10px; /* Espaciado interno */
+    font-size: 24px; /* Tamaño de fuente */
+    border: 2px solid #4CAF50; /* Borde verde */
+    border-radius: 5px; /* Bordes redondeados */
+    margin-bottom: 10px; /* Espacio debajo de la pantalla */
+}
