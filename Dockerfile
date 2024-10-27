@@ -26,3 +26,5 @@ RUN a2enmod perl
 # Sección 5: Copiar los archivos del proyecto al directorio adecuado
 COPY ./html /var/www/html
 COPY ./cgi-bin/calculadora.pl /usr/lib/cgi-bin/calculadora.pl
+# Sección 6: Darle permisos para que ejecute
+RUN chmod +x /usr/lib/cgi-bin/calculadora.pl
