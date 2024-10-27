@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use CGI qw(:standard);
 use List::Util qw(min max);
+use Scalar::Util qw(looks_like_number);
 
 print header('text/html; charset=UTF-8');
 my $expresion = param('expresion') || '';
@@ -49,10 +50,11 @@ print <<HTML;
             <button type="button" onclick="limpiar()">Limpiar</button>
             <button type="button" onclick="retroceder()">←</button>
         </div>
+        <div id="resultado" style="margin-top: 20px; font-weight: bold;">
+            Resultado: $resultado
+        </div>
         <div id="mensajeError" style="color: red; margin-top: 10px;"></div>
     </form>
-
-    <h2>Resultado: $resultado</h2>
 
     <script>
         function agregarValor(valor) {
@@ -93,65 +95,51 @@ sub evaluar_expresion {
 sub calcular {
     my ($tokens) = @_;
 
-    # Manejo de operaciones en paréntesis
-    while (my ($i) = grep { $tokens->[$_] eq '(' } (0..$#$tokens)) {
-        my $inicio = $i;
-        my $fin = $inicio + 1;
-
-        # Encontrar el cierre del paréntesis
-        my $nivel = 1;
-        while ($nivel > 0 && $fin <= $#$tokens) {
-            if ($tokens->[$fin] eq '(') {
-                $nivel++;
-            } elsif ($tokens->[$fin] eq ')') {
-                $nivel--;
-            }
-            $fin++;
-        }
-
-        # Reemplazar la expresión entre paréntesis por su resultado
-        my $subexp = [@$tokens[$inicio + 1 .. $fin - 2]];  # La subexpresión dentro de paréntesis
-        my $subresultado = calcular($subexp);
-        splice @$tokens, $inicio, $fin - $inicio, $subresultado;  # Reemplazar en la lista de tokens
-    }
-
     # Manejo de operaciones de potencia
-    while (my ($i) = grep { $tokens->[$_] eq '^' } (0..$#$tokens)) {
-        my $base = $tokens->[$i - 1];
-        my $exponente = $tokens->[$i + 1];
-        my $resultado = $base ** $exponente;
-        splice @$tokens, $i - 1, 3, $resultado;  # Reemplazar en la lista de tokens
-    }
+    for (my $i = 0; $i < @$tokens; $i++) {
+        if ($tokens->[$i] eq '^') {
+            my $izquierda = $tokens->[$i - 1];
+            my $derecha = $tokens->[$i + 1];
 
-    # Manejo de multiplicación y división
-    while (my ($i) = grep { $tokens->[$_] eq '*' || $tokens->[$_] eq '/' } (0..$#$tokens)) {
-        my $izquierda = $tokens->[$i - 1];
-        my $derecha = $tokens->[$i + 1];
-
-        my $resultado;
-        if ($tokens->[$i] eq '*') {
-            $resultado = $izquierda * $derecha;
-        } elsif ($tokens->[$i] eq '/') {
-            $resultado = $derecha != 0 ? $izquierda / $derecha : 'Error: División por cero';
+            if (looks_like_number($izquierda) && looks_like_number($derecha)) {
+                my $resultado = $izquierda ** $derecha;  # Cálculo de potencia
+                splice @$tokens, $i - 1, 3, $resultado;
+                $i--;  # Retroceder un índice para manejar casos consecutivos
+            }
         }
-
-        splice @$tokens, $i - 1, 3, $resultado;  # Reemplazar en la lista de tokens
     }
 
-    # Manejo de suma y resta
-    while (my ($i) = grep { $tokens->[$_] eq '+' || $tokens->[$_] eq '-' } (0..$#$tokens)) {
-        my $izquierda = $tokens->[$i - 1];
-        my $derecha = $tokens->[$i + 1];
+    # Realizar las operaciones de multiplicación y división
+    for my $operador ('*', '/') {
+        for (my $i = 0; $i <= $#$tokens; $i++) {
+            if ($tokens->[$i] eq $operador) {
+                my $izquierda = $tokens->[$i - 1];
+                my $derecha = $tokens->[$i + 1];
 
-        my $resultado;
-        if ($tokens->[$i] eq '+') {
-            $resultado = $izquierda + $derecha;
-        } elsif ($tokens->[$i] eq '-') {
-            $resultado = $izquierda - $derecha;
+                if (looks_like_number($izquierda) && looks_like_number($derecha)) {
+                    my $resultado = eval "$izquierda $operador $derecha";
+                    splice @$tokens, $i - 1, 3, $resultado;
+                    $i--;  # Retroceder un índice para manejar casos consecutivos
+                }
+            }
         }
-
-        splice @$tokens, $i - 1, 3, $resultado;  # Reemplazar en la lista de tokens
     }
 
-    return $tokens->[0];  # Retornar el resultado final
+    # Realizar las operaciones de suma y resta
+    for my $operador ('+', '-') {
+        for (my $i = 0; $i <= $#$tokens; $i++) {
+            if ($tokens->[$i] eq $operador) {
+                my $izquierda = $tokens->[$i - 1];
+                my $derecha = $tokens->[$i + 1];
+
+                if (looks_like_number($izquierda) && looks_like_number($derecha)) {
+                    my $resultado = eval "$izquierda $operador $derecha";
+                    splice @$tokens, $i - 1, 3, $resultado;
+                    $i--;  # Retroceder un índice para manejar casos consecutivos
+                }
+            }
+        }
+    }
+
+    return $tokens->[0];  # El resultado final será el único elemento restante
 }
