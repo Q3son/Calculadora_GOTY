@@ -23,3 +23,6 @@ RUN apt-get update && \
 # Sección 4: Activar módulos CGI y Perl en Apache
 RUN a2enmod cgi
 RUN a2enmod perl
+# Sección 5: Copiar los archivos del proyecto al directorio adecuado
+COPY ./html /var/www/html
+COPY ./cgi-bin/calculadora.pl /usr/lib/cgi-bin/calculadora.pl
