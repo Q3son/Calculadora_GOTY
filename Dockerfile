@@ -37,3 +37,8 @@ RUN echo "<Directory /usr/lib/cgi-bin>\n\
     AddHandler cgi-script .pl\n\
     Require all granted\n\
 </Directory>" >> /etc/apache2/apache2.conf && apachectl restart
+# Sección 9: Exponer el puerto 80 (puerto de Apache)
+EXPOSE 80
+
+# Iniciar Apache en el contenedor
+CMD ["apachectl", "-D", "FOREGROUND"]
