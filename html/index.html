@@ -41,3 +41,24 @@
             <button type="submit">Calcular</button>
         </div>
     </form>
+
+    <!-- Script para manejar la entrada del teclado numérico -->
+    <script>
+        // Función para agregar el valor al display
+        function agregarValor(valor) {
+            const pantalla = document.getElementById('pantalla');
+            pantalla.value += valor;  // Añadir el valor al campo de pantalla
+        }
+
+        // Capturar el evento de teclado
+        document.addEventListener('keydown', function(event) {
+            const teclasPermitidas = '0123456789+-*/^()'; // Teclas permitidas
+            if (teclasPermitidas.includes(event.key)) {
+                agregarValor(event.key); // Agregar valor al campo de pantalla
+            } else if (event.key === 'Enter') {
+                document.querySelector('form').submit(); // Enviar el formulario al presionar Enter
+            }
+        });
+    </script>
+</body>
+</html>
