@@ -20,3 +20,6 @@ RUN apt-get update && \
     apt-get install -y libcgi-pm-perl && \
     cpan URI::Escape && \
     apt-get clean
+# Sección 4: Activar módulos CGI y Perl en Apache
+RUN a2enmod cgi
+RUN a2enmod perl
