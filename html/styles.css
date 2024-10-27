@@ -15,3 +15,11 @@ h1 {
     color: #4CAF50; /* Color del título */
     text-align: center; /* Alineación centrada */
 }
+/* Sección 3: Estilos del Formulario */
+form {
+    background-color: #fff; /* Fondo blanco para el formulario */
+    padding: 20px; /* Espaciado interno */
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra sutil */
+    width: 300px; /* Ancho fijo del formulario */
+}
