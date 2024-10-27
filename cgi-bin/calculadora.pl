@@ -10,23 +10,22 @@ my $expresion = param('expresion') || '';
 my $resultado = '';
 
 if ($expresion) {
+    # Validar que la expresión contenga solo caracteres válidos
     if ($expresion =~ /^[\d\s+\-*\/\^().]+$/) {
         $resultado = evaluar_expresion($expresion);
     } else {
         $resultado = "Error: Caracteres no válidos en la expresión.";
     }
-    print $resultado;  # Devolver solo el resultado
-    exit;              # Salir después de imprimir el resultado
 }
 
-# Si no hay expresión, imprimir el formulario de la calculadora
+# Imprimir el formulario de la calculadora
 print start_html("Calculadora teamQ3son");
 
 print <<HTML;
     <h1>Calculadora teamQ3son</h1>
-    <form id="calculadora">
+    <form method="GET" action="">
         <div>
-            <input type="text" id="pantalla" name="expresion" placeholder="Ingresa tu operación aquí" value="$resultado" readonly>
+            <input type="text" id="pantalla" name="expresion" placeholder="Ingresa tu operación aquí" value="$expresion" readonly>
         </div>
         <div id="botones">
             <button type="button" onclick="agregarValor('7')">7</button>
@@ -46,12 +45,14 @@ print <<HTML;
             <button type="button" onclick="agregarValor('^')">^</button>
             <button type="button" onclick="agregarValor('(')">(</button>
             <button type="button" onclick="agregarValor(')')">)</button>
-            <button type="button" onclick="calcular()">Calcular</button>
+            <button type="submit">Calcular</button>
             <button type="button" onclick="limpiar()">Limpiar</button>
             <button type="button" onclick="retroceder()">←</button>
         </div>
         <div id="mensajeError" style="color: red; margin-top: 10px;"></div>
     </form>
+
+    <h2>Resultado: $resultado</h2>
 
     <script>
         function agregarValor(valor) {
@@ -66,21 +67,6 @@ print <<HTML;
         function retroceder() {
             const pantalla = document.getElementById('pantalla');
             pantalla.value = pantalla.value.slice(0, -1);
-        }
-
-        function calcular() {
-            const expresion = document.getElementById('pantalla').value;
-
-            // Enviar la solicitud AJAX
-            const xhr = new XMLHttpRequest();
-            xhr.open("GET", "cgi-bin/calculadora.pl?expresion=" + encodeURIComponent(expresion), true);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    // Mostrar el resultado en la pantalla
-                    document.getElementById('pantalla').value = xhr.responseText;
-                }
-            };
-            xhr.send();
         }
     </script>
 HTML
@@ -167,5 +153,5 @@ sub calcular {
         splice @$tokens, $i - 1, 3, $resultado;  # Reemplazar en la lista de tokens
     }
 
-    return $tokens->[0];  # El resultado final debe ser el único valor en los tokens
+    return $tokens->[0];  # Retornar el resultado final
 }

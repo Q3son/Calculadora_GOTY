@@ -9,7 +9,7 @@
 <body>
 
 <h1>Calculadora @teamQ3son</h1>
-<form action="cgi-bin/calculadora.pl" method="get" id="calculadora" onsubmit="enviarFormulario(event);">
+<form action="cgi-bin/calculadora.pl" method="get" id="calculadora">
     <div>
         <input type="text" id="pantalla" name="expresion" placeholder="Ingresa tu operación aquí" readonly>
     </div>
@@ -36,7 +36,14 @@
         <button type="button" onclick="limpiar()">Limpiar</button>
         <button type="button" onclick="retroceder()">←</button>
     </div>
-    <div id="resultado" style="margin-top: 20px; font-size: 1.2em;"></div>
+    <div id="resultado" style="margin-top: 20px; font-size: 1.2em;">
+        <!-- Este div mostrará el resultado enviado desde el script Perl -->
+        <?php
+            if (isset($_GET['resultado'])) {
+                echo 'Resultado: ' . htmlspecialchars($_GET['resultado']);
+            }
+        ?>
+    </div>
     <div id="mensajeError" style="color: red; margin-top: 10px;"></div>
 </form>
 
@@ -57,31 +64,6 @@
         pantalla.value = pantalla.value.slice(0, -1);
     }
 
-    function enviarFormulario(event) {
-        event.preventDefault(); // Evitar que el formulario se envíe de forma convencional
-
-        const expresion = document.getElementById('pantalla').value;
-
-        // Crear una solicitud AJAX
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', 'cgi-bin/calculadora.pl?expresion=' + encodeURIComponent(expresion), true);
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                // Mostrar el resultado en la página
-                document.getElementById('resultado').innerText = 'Resultado: ' + xhr.responseText;
-                document.getElementById('mensajeError').innerText = ''; // Limpiar mensajes de error
-            } else {
-                document.getElementById('mensajeError').innerText = 'Error en la solicitud.';
-                document.getElementById('resultado').innerText = '';
-            }
-        };
-        xhr.onerror = function() {
-            document.getElementById('mensajeError').innerText = 'Error de conexión.';
-            document.getElementById('resultado').innerText = '';
-        };
-        xhr.send();
-    }
-
     // Agregar evento para escuchar las teclas presionadas
     document.addEventListener('keydown', function(event) {
         const key = event.key;
@@ -90,7 +72,7 @@
         if ("0123456789+-*/^()".includes(key)) {
             agregarValor(key);
         } else if (key === "Enter") {
-            enviarFormulario(event); // Calcular al presionar Enter
+            // No necesitamos hacer nada aquí, el formulario se enviará normalmente
         } else if (key === "Backspace") {
             retroceder(); // Retroceder si se presiona Backspace
         } else if (key === "Escape") {
