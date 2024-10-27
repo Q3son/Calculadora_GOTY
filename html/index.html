@@ -4,118 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora @teamQ3son</title>
-    
-    <!-- Enlace al archivo CSS para estilos -->
-    <link rel="stylesheet" href="styles.css">
-</head>    
+    <style>
+        #botones button {
+            margin: 5px;
+            padding: 10px 15px;
+            font-size: 16px;
+        }
+        #pantalla {
+            width: 100%;
+            height: 40px;
+            font-size: 20px;
+            text-align: right;
+            margin-bottom: 10px;
+        }
+        #mensajeError {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
 <body>
-    <!-- Título principal de la calculadora -->
-    <h1>Calculadora @teamQ3son</h1>
 
-    <!-- Comienzo del formulario para las operaciones de la calculadora -->
-    <form id="calculadora" onsubmit="event.preventDefault(); calcular();">
-        <div>
-            <!-- Pantalla de visualización de la expresión (editable) -->
-            <input type="text" id="pantalla" name="expresion" placeholder="Ingresa tu operación aquí" readonly>
-        </div>
-
-        <!-- Contenedor de botones de la calculadora -->
-        <div id="botones">
-            <button type="button" onclick="agregarValor('7')">7</button>
-            <button type="button" onclick="agregarValor('8')">8</button>
-            <button type="button" onclick="agregarValor('9')">9</button>
-            <button type="button" onclick="agregarValor('+')">+</button>
-            <button type="button" onclick="agregarValor('4')">4</button>
-            <button type="button" onclick="agregarValor('5')">5</button>
-            <button type="button" onclick="agregarValor('6')">6</button>
-            <button type="button" onclick="agregarValor('-')">-</button>
-            <button type="button" onclick="agregarValor('1')">1</button>
-            <button type="button" onclick="agregarValor('2')">2</button>
-            <button type="button" onclick="agregarValor('3')">3</button>
-            <button type="button" onclick="agregarValor('*')">*</button>
-            <button type="button" onclick="agregarValor('0')">0</button>
-            <button type="button" onclick="agregarValor('/')">/</button>
-            <button type="button" onclick="agregarValor('^')">^</button>
-            <button type="button" onclick="agregarValor('(')">(</button>
-            <button type="button" onclick="agregarValor(')')">)</button>
-            <button type="button" onclick="calcular()">Calcular</button>
-            <button type="button" onclick="limpiar()">Limpiar</button> <!-- Botón para limpiar la pantalla -->
-            <button type="button" onclick="retroceder()">←</button> <!-- Botón para borrar el último carácter -->
-        </div>
-    </form>
-
-    <!-- Mensaje de error -->
+<h1>Calculadora @teamQ3son</h1>
+<form action="calculadora.pl" method="get">
+    <div>
+        <input type="text" id="pantalla" name="expresion" placeholder="Ingresa tu operación aquí" value="" readonly>
+    </div>
+    <div id="botones">
+        <button type="button" onclick="agregarValor('7')">7</button>
+        <button type="button" onclick="agregarValor('8')">8</button>
+        <button type="button" onclick="agregarValor('9')">9</button>
+        <button type="button" onclick="agregarValor('+')">+</button>
+        <button type="button" onclick="agregarValor('4')">4</button>
+        <button type="button" onclick="agregarValor('5')">5</button>
+        <button type="button" onclick="agregarValor('6')">6</button>
+        <button type="button" onclick="agregarValor('-')">-</button>
+        <button type="button" onclick="agregarValor('1')">1</button>
+        <button type="button" onclick="agregarValor('2')">2</button>
+        <button type="button" onclick="agregarValor('3')">3</button>
+        <button type="button" onclick="agregarValor('*')">*</button>
+        <button type="button" onclick="agregarValor('0')">0</button>
+        <button type="button" onclick="agregarValor('/')">/</button>
+        <button type="button" onclick="agregarValor('^')">^</button>
+        <button type="button" onclick="agregarValor('(')">(</button>
+        <button type="button" onclick="agregarValor(')')">)</button>
+        <button type="submit">Calcular</button>
+        <button type="button" onclick="limpiar()">Limpiar</button>
+        <button type="button" onclick="retroceder()">←</button>
+    </div>
     <div id="mensajeError" style="color: red; margin-top: 10px;"></div>
+</form>
 
-    <!-- Script para manejar la entrada del teclado numérico -->
-    <script>
-        // Función para agregar el valor al display
-        function agregarValor(valor) {
-            const pantalla = document.getElementById('pantalla');
-            pantalla.value += valor;  // Añadir el valor al campo de pantalla
-        }
+<script>
+    function agregarValor(valor) {
+        const pantalla = document.getElementById('pantalla');
+        pantalla.value += valor;
+    }
 
-        // Función para limpiar la pantalla
-        function limpiar() {
-            document.getElementById('pantalla').value = ''; // Limpiar el campo de pantalla
-            document.getElementById('mensajeError').innerText = ''; // Limpiar el mensaje de error
-        }
+    function limpiar() {
+        document.getElementById('pantalla').value = '';
+    }
 
-        // Función para retroceder (Backspace)
-        function retroceder() {
-            const pantalla = document.getElementById('pantalla');
-            pantalla.value = pantalla.value.slice(0, -1); // Eliminar el último carácter
-        }
-
-        // Función para reemplazar el operador ^ por Math.pow() en la expresión
-        function parsePotencia(expresion) {
-            return expresion.replace(/(\d+)\^(\d+)/g, 'Math.pow($1,$2)');
-        }
-
-        // Función para calcular y mostrar el resultado
-        function calcular() {
-            const pantalla = document.getElementById('pantalla');
-            const expresion = pantalla.value;
-            const mensajeError = document.getElementById('mensajeError');
-
-            // Evitar que se ejecute si no hay expresión
-            if (!expresion) {
-                mensajeError.innerText = 'Por favor ingresa una expresión.';
-                return;
-            }
-
-            try {
-                // Convierte ^ a Math.pow()
-                const expresionConPotencia = parsePotencia(expresion);
-                const resultado = eval(expresionConPotencia); // Evaluar la expresión
-
-                if (resultado === Infinity || resultado === -Infinity) {
-                    throw new Error("Resultado infinito.");
-                }
-
-                pantalla.value = resultado; // Mostrar el resultado en la pantalla
-                mensajeError.innerText = ''; // Limpiar el mensaje de error
-            } catch (error) {
-                pantalla.value = 'Error'; // Mostrar "Error" en la pantalla
-                mensajeError.innerText = error.message; // Mostrar el mensaje de error específico
-            }
-        }
-
-        // Capturar el evento de teclado
-        document.addEventListener('keydown', function(event) {
-            const teclasPermitidas = '0123456789+-*/^()';
-            if (teclasPermitidas.includes(event.key)) {
-                agregarValor(event.key);
-            } else if (event.key === 'Enter') {
-                calcular();
-                event.preventDefault();
-            } else if (event.key === 'Escape') {
-                limpiar();
-            } else if (event.key === 'Backspace') {
-                retroceder();
-                event.preventDefault();
-            }
-        });
-    </script>
+    function retroceder() {
+        const pantalla = document.getElementById('pantalla');
+        pantalla.value = pantalla.value.slice(0, -1);
+    }
+</script>
 </body>
 </html>

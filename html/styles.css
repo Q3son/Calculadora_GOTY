@@ -70,12 +70,12 @@ button:active {
 }
 
 /* Sección 6: Estilos del Mensaje de Error */
-#error {
+#mensajeError {
     margin-top: 15px;
     color: #ff4d4d;
     font-size: 14px;
     text-align: center;
-    visibility: hidden;
+    visibility: hidden; /* Puedes cambiar esto según cómo quieras mostrar el mensaje */
 }
 
 /* Sección 7: Responsividad */
