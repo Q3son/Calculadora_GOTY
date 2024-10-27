@@ -28,3 +28,5 @@ COPY ./html /var/www/html
 COPY ./cgi-bin/calculadora.pl /usr/lib/cgi-bin/calculadora.pl
 # Sección 6: Darle permisos para que ejecute
 RUN chmod +x /usr/lib/cgi-bin/calculadora.pl
+# Sección 7: Arreglar el error de Windows
+RUN sed -i 's/\r$//' /usr/lib/cgi-bin/calculadora.pl
