@@ -6,8 +6,6 @@ use CGI qw(:standard);
 use List::Util qw(min max);
 
 print header('text/html; charset=UTF-8');
-print start_html("Calculadora teamQ3son");
-
 my $expresion = param('expresion') || '';
 my $resultado = '';
 
@@ -17,11 +15,16 @@ if ($expresion) {
     } else {
         $resultado = "Error: Caracteres no válidos en la expresión.";
     }
+    print $resultado;  # Devolver solo el resultado
+    exit;              # Salir después de imprimir el resultado
 }
+
+# Si no hay expresión, imprimir el formulario de la calculadora
+print start_html("Calculadora teamQ3son");
 
 print <<HTML;
     <h1>Calculadora teamQ3son</h1>
-    <form action="calculadora.pl" method="get">
+    <form id="calculadora">
         <div>
             <input type="text" id="pantalla" name="expresion" placeholder="Ingresa tu operación aquí" value="$resultado" readonly>
         </div>
@@ -43,7 +46,7 @@ print <<HTML;
             <button type="button" onclick="agregarValor('^')">^</button>
             <button type="button" onclick="agregarValor('(')">(</button>
             <button type="button" onclick="agregarValor(')')">)</button>
-            <button type="submit">Calcular</button>
+            <button type="button" onclick="calcular()">Calcular</button>
             <button type="button" onclick="limpiar()">Limpiar</button>
             <button type="button" onclick="retroceder()">←</button>
         </div>
@@ -64,6 +67,21 @@ print <<HTML;
             const pantalla = document.getElementById('pantalla');
             pantalla.value = pantalla.value.slice(0, -1);
         }
+
+        function calcular() {
+            const expresion = document.getElementById('pantalla').value;
+
+            // Enviar la solicitud AJAX
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "cgi-bin/calculadora.pl?expresion=" + encodeURIComponent(expresion), true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    // Mostrar el resultado en la pantalla
+                    document.getElementById('pantalla').value = xhr.responseText;
+                }
+            };
+            xhr.send();
+        }
     </script>
 HTML
 
@@ -71,7 +89,7 @@ print end_html;
 
 sub evaluar_expresion {
     my ($expresion) = @_;
-    
+
     # Separar la expresión en tokens (números y operadores)
     my @tokens = split(/(\D)/, $expresion);
     my @resultado;

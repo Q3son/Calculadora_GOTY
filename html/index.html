@@ -9,7 +9,7 @@
 <body>
 
 <h1>Calculadora @teamQ3son</h1>
-<form action="cgi-bin/calculadora.pl" method="get" id="calculadora">
+<form action="cgi-bin/calculadora.pl" method="get" id="calculadora" onsubmit="enviarFormulario(event);">
     <div>
         <input type="text" id="pantalla" name="expresion" placeholder="Ingresa tu operación aquí" readonly>
     </div>
@@ -36,10 +36,52 @@
         <button type="button" onclick="limpiar()">Limpiar</button>
         <button type="button" onclick="retroceder()">←</button>
     </div>
+    <div id="resultado" style="margin-top: 20px; font-size: 1.2em;"></div>
     <div id="mensajeError" style="color: red; margin-top: 10px;"></div>
 </form>
 
 <script>
+    function agregarValor(valor) {
+        const pantalla = document.getElementById('pantalla');
+        pantalla.value += valor;
+    }
+
+    function limpiar() {
+        document.getElementById('pantalla').value = '';
+        document.getElementById('resultado').innerText = '';
+        document.getElementById('mensajeError').innerText = '';
+    }
+
+    function retroceder() {
+        const pantalla = document.getElementById('pantalla');
+        pantalla.value = pantalla.value.slice(0, -1);
+    }
+
+    function enviarFormulario(event) {
+        event.preventDefault(); // Evitar que el formulario se envíe de forma convencional
+
+        const expresion = document.getElementById('pantalla').value;
+
+        // Crear una solicitud AJAX
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'cgi-bin/calculadora.pl?expresion=' + encodeURIComponent(expresion), true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // Mostrar el resultado en la página
+                document.getElementById('resultado').innerText = 'Resultado: ' + xhr.responseText;
+                document.getElementById('mensajeError').innerText = ''; // Limpiar mensajes de error
+            } else {
+                document.getElementById('mensajeError').innerText = 'Error en la solicitud.';
+                document.getElementById('resultado').innerText = '';
+            }
+        };
+        xhr.onerror = function() {
+            document.getElementById('mensajeError').innerText = 'Error de conexión.';
+            document.getElementById('resultado').innerText = '';
+        };
+        xhr.send();
+    }
+
     // Agregar evento para escuchar las teclas presionadas
     document.addEventListener('keydown', function(event) {
         const key = event.key;
@@ -48,27 +90,13 @@
         if ("0123456789+-*/^()".includes(key)) {
             agregarValor(key);
         } else if (key === "Enter") {
-            document.getElementById('calculadora').submit(); // Enviar el formulario al presionar Enter
+            enviarFormulario(event); // Calcular al presionar Enter
         } else if (key === "Backspace") {
             retroceder(); // Retroceder si se presiona Backspace
         } else if (key === "Escape") {
             limpiar(); // Limpiar la pantalla si se presiona Escape
         }
     });
-
-    function agregarValor(valor) {
-        const pantalla = document.getElementById('pantalla');
-        pantalla.value += valor;
-    }
-
-    function limpiar() {
-        document.getElementById('pantalla').value = '';
-    }
-
-    function retroceder() {
-        const pantalla = document.getElementById('pantalla');
-        pantalla.value = pantalla.value.slice(0, -1);
-    }
 </script>
 </body>
 </html>
