@@ -1,69 +1,90 @@
 /* Sección 1: Estilos Generales */
 body {
-    font-family: 'Arial', sans-serif; /* Tipografía general */
-    background-color: #f4f4f4; /* Color de fondo */
-    color: #333; /* Color del texto */
+    font-family: 'Arial', sans-serif;
+    background-image: url('background.gif'); /* Fondo existente */
+    background-size: cover;
+    background-position: center;
+    color: #ffffff;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Altura de la ventana */
-    margin: 0; /* Sin margen */
+    height: 100vh;
+    margin: 0;
 }
 /* Sección 2: Estilos del Título */
 h1 {
-    margin-bottom: 20px; /* Espacio debajo del título */
-    color: #4CAF50; /* Color del título */
-    text-align: center; /* Alineación centrada */
+    color: #00e5ff;
+    text-shadow: 0 4px 8px rgba(0, 229, 255, 0.3);
+    font-size: 2em;
+    text-align: center;
+    margin-bottom: 20px;
 }
 /* Sección 3: Estilos del Formulario */
 form {
-    background-color: #fff; /* Fondo blanco para el formulario */
-    padding: 20px; /* Espaciado interno */
-    border-radius: 10px; /* Bordes redondeados */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra sutil */
-    width: 300px; /* Ancho fijo del formulario */
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+    max-width: 320px;
+    width: 100%;
 }
 /* Sección 4: Estilos de la Pantalla */
 #pantalla {
-    width: 100%; /* Ancho completo */
-    padding: 10px; /* Espaciado interno */
-    font-size: 24px; /* Tamaño de fuente */
-    border: 2px solid #4CAF50; /* Borde verde */
-    border-radius: 5px; /* Bordes redondeados */
-    margin-bottom: 10px; /* Espacio debajo de la pantalla */
+    width: 100%;
+    padding: 15px;
+    font-size: 26px;
+    color: #00e5ff;
+    background-color: #333;
+    border: 2px solid #00e5ff;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    text-align: right;
+    box-sizing: border-box; /* Asegura que el ancho no exceda el contenedor */
 }
 /* Sección 5: Estilos de los Botones */
 #botones {
-    display: grid; /* Usar grid para los botones */
-    grid-template-columns: repeat(4, 1fr); /* Cuatro columnas */
-    gap: 10px; /* Espacio entre los botones */
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
 }
 
 button {
-    padding: 15px; /* Espaciado interno */
-    font-size: 18px; /* Tamaño de fuente */
-    background-color: #4CAF50; /* Color de fondo verde */
-    color: white; /* Color del texto */
-    border: none; /* Sin borde */
-    border-radius: 5px; /* Bordes redondeados */
-    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
-    transition: background-color 0.3s ease; /* Transición suave */
+    padding: 15px;
+    font-size: 18px;
+    background-color: #262626;
+    color: #00e5ff;
+    border: 1px solid #00e5ff;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 button:hover {
-    background-color: #45a049; /* Color más oscuro al pasar el ratón */
+    background-color: #333333;
 }
 
 button:active {
-    background-color: #3e8e41; /* Color aún más oscuro al hacer clic */
+    background-color: #1a1a1a;
+    transform: scale(0.98);
 }
-/* Sección 6: Estilos de Responsividad */
+
+/* Sección 6: Estilos del Mensaje de Error */
+#error {
+    margin-top: 15px;
+    color: #ff4d4d;
+    font-size: 14px;
+    text-align: center;
+    visibility: hidden;
+}
+
+/* Sección 7: Responsividad */
 @media (max-width: 400px) {
     form {
-        width: 90%; /* Ancho del formulario en pantallas pequeñas */
+        width: 90%;
     }
 
     button {
-        font-size: 16px; /* Tamaño de fuente más pequeño en pantallas pequeñas */
+        font-size: 16px;
     }
 }

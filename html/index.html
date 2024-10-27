@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Calculadora Edson</title>
-        
-        <!-- Enlace al archivo CSS para estilos -->
-        <link rel="stylesheet" href="styles.css">  <!-- Ajustar aquí -->
-    </head>    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora @teamQ3son</title>
+    
+    <!-- Enlace al archivo CSS para estilos -->
+    <link rel="stylesheet" href="styles.css">
+</head>    
 <body>
     <!-- Título principal de la calculadora -->
-    <h1>Calculadora Edson</h1>
+    <h1>Calculadora @teamQ3son</h1>
 
     <!-- Comienzo del formulario para las operaciones de la calculadora -->
-    <form id="calculadora" action="cgi-bin/calculadora.pl" method="get">
+    <form id="calculadora" onsubmit="event.preventDefault(); calcular();">
         <div>
             <!-- Pantalla de visualización de la expresión (editable) -->
             <input type="text" id="pantalla" name="expresion" placeholder="Ingresa tu operación aquí" readonly>
@@ -40,8 +40,12 @@
             <button type="button" onclick="agregarValor(')')">)</button>
             <button type="button" onclick="calcular()">Calcular</button>
             <button type="button" onclick="limpiar()">Limpiar</button> <!-- Botón para limpiar la pantalla -->
+            <button type="button" onclick="retroceder()">←</button> <!-- Botón para borrar el último carácter -->
         </div>
     </form>
+
+    <!-- Mensaje de error -->
+    <div id="mensajeError" style="color: red; margin-top: 10px;"></div>
 
     <!-- Script para manejar la entrada del teclado numérico -->
     <script>
@@ -54,22 +58,62 @@
         // Función para limpiar la pantalla
         function limpiar() {
             document.getElementById('pantalla').value = ''; // Limpiar el campo de pantalla
+            document.getElementById('mensajeError').innerText = ''; // Limpiar el mensaje de error
         }
 
-        // Función para calcular y enviar la expresión
+        // Función para retroceder (Backspace)
+        function retroceder() {
+            const pantalla = document.getElementById('pantalla');
+            pantalla.value = pantalla.value.slice(0, -1); // Eliminar el último carácter
+        }
+
+        // Función para reemplazar el operador ^ por Math.pow() en la expresión
+        function parsePotencia(expresion) {
+            return expresion.replace(/(\d+)\^(\d+)/g, 'Math.pow($1,$2)');
+        }
+
+        // Función para calcular y mostrar el resultado
         function calcular() {
-            document.getElementById('calculadora').submit(); // Enviar el formulario
+            const pantalla = document.getElementById('pantalla');
+            const expresion = pantalla.value;
+            const mensajeError = document.getElementById('mensajeError');
+
+            // Evitar que se ejecute si no hay expresión
+            if (!expresion) {
+                mensajeError.innerText = 'Por favor ingresa una expresión.';
+                return;
+            }
+
+            try {
+                // Convierte ^ a Math.pow()
+                const expresionConPotencia = parsePotencia(expresion);
+                const resultado = eval(expresionConPotencia); // Evaluar la expresión
+
+                if (resultado === Infinity || resultado === -Infinity) {
+                    throw new Error("Resultado infinito.");
+                }
+
+                pantalla.value = resultado; // Mostrar el resultado en la pantalla
+                mensajeError.innerText = ''; // Limpiar el mensaje de error
+            } catch (error) {
+                pantalla.value = 'Error'; // Mostrar "Error" en la pantalla
+                mensajeError.innerText = error.message; // Mostrar el mensaje de error específico
+            }
         }
 
         // Capturar el evento de teclado
         document.addEventListener('keydown', function(event) {
-            const teclasPermitidas = '0123456789+-*/^()'; // Teclas permitidas
+            const teclasPermitidas = '0123456789+-*/^()';
             if (teclasPermitidas.includes(event.key)) {
-                agregarValor(event.key); // Agregar valor al campo de pantalla
+                agregarValor(event.key);
             } else if (event.key === 'Enter') {
-                calcular(); // Calcular al presionar Enter
+                calcular();
+                event.preventDefault();
             } else if (event.key === 'Escape') {
-                limpiar(); // Limpiar al presionar Escape
+                limpiar();
+            } else if (event.key === 'Backspace') {
+                retroceder();
+                event.preventDefault();
             }
         });
     </script>
