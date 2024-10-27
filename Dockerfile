@@ -30,3 +30,10 @@ COPY ./cgi-bin/calculadora.pl /usr/lib/cgi-bin/calculadora.pl
 RUN chmod +x /usr/lib/cgi-bin/calculadora.pl
 # Sección 7: Arreglar el error de Windows
 RUN sed -i 's/\r$//' /usr/lib/cgi-bin/calculadora.pl
+# Sección 8: Configuración del directorio CGI
+RUN echo "<Directory /usr/lib/cgi-bin>\n\
+    AllowOverride None\n\
+    Options +ExecCGI\n\
+    AddHandler cgi-script .pl\n\
+    Require all granted\n\
+</Directory>" >> /etc/apache2/apache2.conf && apachectl restart
