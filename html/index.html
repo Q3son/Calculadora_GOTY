@@ -9,11 +9,12 @@
 <body>
 
 <h1>Calculadora @teamQ3son</h1>
-<form action="cgi-bin/calculadora.pl" method="get">
+<form action="cgi-bin/calculadora.pl" method="get" id="calculadora">
     <div>
-        <input type="text" id="pantalla" name="expresion" placeholder="Ingresa tu operación aquí" value="" readonly>
+        <input type="text" id="pantalla" name="expresion" placeholder="Ingresa tu operación aquí" readonly>
     </div>
     <div id="botones">
+        <!-- Botones numéricos -->
         <button type="button" onclick="agregarValor('7')">7</button>
         <button type="button" onclick="agregarValor('8')">8</button>
         <button type="button" onclick="agregarValor('9')">9</button>
@@ -47,7 +48,7 @@
         if ("0123456789+-*/^()".includes(key)) {
             agregarValor(key);
         } else if (key === "Enter") {
-            document.querySelector('form').submit(); // Enviar el formulario al presionar Enter
+            document.getElementById('calculadora').submit(); // Enviar el formulario al presionar Enter
         } else if (key === "Backspace") {
             retroceder(); // Retroceder si se presiona Backspace
         } else if (key === "Escape") {

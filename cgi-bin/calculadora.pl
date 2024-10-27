@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl 
 
 use strict;
 use warnings;
@@ -23,7 +23,7 @@ print <<HTML;
     <h1>Calculadora teamQ3son</h1>
     <form action="calculadora.pl" method="get">
         <div>
-            <input type="text" id="pantalla" name="expresion" placeholder="Ingresa tu operación aquí" value="$expresion" readonly>
+            <input type="text" id="pantalla" name="expresion" placeholder="Ingresa tu operación aquí" value="$resultado" readonly>
         </div>
         <div id="botones">
             <button type="button" onclick="agregarValor('7')">7</button>
@@ -47,7 +47,7 @@ print <<HTML;
             <button type="button" onclick="limpiar()">Limpiar</button>
             <button type="button" onclick="retroceder()">←</button>
         </div>
-        <div id="mensajeError" style="color: red; margin-top: 10px;">Resultado: $resultado</div>
+        <div id="mensajeError" style="color: red; margin-top: 10px;"></div>
     </form>
 
     <script>
@@ -71,7 +71,7 @@ print end_html;
 
 sub evaluar_expresion {
     my ($expresion) = @_;
-
+    
     # Separar la expresión en tokens (números y operadores)
     my @tokens = split(/(\D)/, $expresion);
     my @resultado;
