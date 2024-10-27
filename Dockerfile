@@ -15,3 +15,8 @@ RUN apt-get install -y \
     curl \
     vim && \
     apt-get clean
+# Sección 3: Instalación de módulos de Perl necesarios
+RUN apt-get update && \
+    apt-get install -y libcgi-pm-perl && \
+    cpan URI::Escape && \
+    apt-get clean
