@@ -57,3 +57,13 @@ button:hover {
 button:active {
     background-color: #3e8e41; /* Color aún más oscuro al hacer clic */
 }
+/* Sección 6: Estilos de Responsividad */
+@media (max-width: 400px) {
+    form {
+        width: 90%; /* Ancho del formulario en pantallas pequeñas */
+    }
+
+    button {
+        font-size: 16px; /* Tamaño de fuente más pequeño en pantallas pequeñas */
+    }
+}
