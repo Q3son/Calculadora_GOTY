@@ -32,3 +32,28 @@ form {
     border-radius: 5px; /* Bordes redondeados */
     margin-bottom: 10px; /* Espacio debajo de la pantalla */
 }
+/* Sección 5: Estilos de los Botones */
+#botones {
+    display: grid; /* Usar grid para los botones */
+    grid-template-columns: repeat(4, 1fr); /* Cuatro columnas */
+    gap: 10px; /* Espacio entre los botones */
+}
+
+button {
+    padding: 15px; /* Espaciado interno */
+    font-size: 18px; /* Tamaño de fuente */
+    background-color: #4CAF50; /* Color de fondo verde */
+    color: white; /* Color del texto */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+    transition: background-color 0.3s ease; /* Transición suave */
+}
+
+button:hover {
+    background-color: #45a049; /* Color más oscuro al pasar el ratón */
+}
+
+button:active {
+    background-color: #3e8e41; /* Color aún más oscuro al hacer clic */
+}
