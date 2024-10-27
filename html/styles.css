@@ -1,0 +1,11 @@
+/* Sección 1: Estilos Generales */
+body {
+    font-family: 'Arial', sans-serif; /* Tipografía general */
+    background-color: #f4f4f4; /* Color de fondo */
+    color: #333; /* Color del texto */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Altura de la ventana */
+    margin: 0; /* Sin margen */
+}
