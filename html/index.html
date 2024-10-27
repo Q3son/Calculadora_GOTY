@@ -9,7 +9,7 @@
 <body>
 
 <h1>Calculadora @teamQ3son</h1>
-<form action="cgi-bin/calculadora.pl" method="get" id="calculadora">
+<form action="cgi-bin/calculadora.pl" method="GET" id="calculadora" target="resultadoFrame">
     <div>
         <input type="text" id="pantalla" name="expresion" placeholder="Ingresa tu operación aquí" readonly>
     </div>
@@ -32,20 +32,16 @@
         <button type="button" onclick="agregarValor('^')">^</button>
         <button type="button" onclick="agregarValor('(')">(</button>
         <button type="button" onclick="agregarValor(')')">)</button>
-        <button type="submit">Calcular</button>
+        <button type="submit">Calcular</button> <!-- Cambiado a submit -->
         <button type="button" onclick="limpiar()">Limpiar</button>
         <button type="button" onclick="retroceder()">←</button>
     </div>
-    <div id="resultado" style="margin-top: 20px; font-size: 1.2em;">
-        <!-- Este div mostrará el resultado enviado desde el script Perl -->
-        <?php
-            if (isset($_GET['resultado'])) {
-                echo 'Resultado: ' . htmlspecialchars($_GET['resultado']);
-            }
-        ?>
-    </div>
     <div id="mensajeError" style="color: red; margin-top: 10px;"></div>
 </form>
+
+<!-- iframe para mostrar el resultado -->
+<iframe name="resultadoFrame" style="display: none;"></iframe>
+<div id="resultado" style="margin-top: 20px; font-size: 1.2em;"></div>
 
 <script>
     function agregarValor(valor) {
@@ -72,13 +68,22 @@
         if ("0123456789+-*/^()".includes(key)) {
             agregarValor(key);
         } else if (key === "Enter") {
-            // No necesitamos hacer nada aquí, el formulario se enviará normalmente
+            document.getElementById('calculadora').submit(); // Enviar el formulario al presionar Enter
         } else if (key === "Backspace") {
             retroceder(); // Retroceder si se presiona Backspace
         } else if (key === "Escape") {
             limpiar(); // Limpiar la pantalla si se presiona Escape
         }
     });
+
+    // Escuchar el evento de carga del iframe para mostrar el resultado
+    document.querySelector('iframe[name="resultadoFrame"]').onload = function() {
+        const iframeDoc = this.contentDocument || this.contentWindow.document;
+        const resultado = iframeDoc.body.innerHTML; // Asumiendo que el resultado se muestra en el body
+
+        // Mostrar el resultado en el div correspondiente
+        document.getElementById('resultado').innerHTML = `<strong>Resultado:</strong> ${resultado}`;
+    };
 </script>
 </body>
 </html>
