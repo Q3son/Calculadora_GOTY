@@ -20,7 +20,7 @@ my $resultado;
 
 # Validar la expresión usando expresiones regulares
 if ($expresion =~ /^[\d\s+\-*\/\^().]+$/) {
-    
+
     # Evaluar la expresión
     eval {
         $resultado = eval($expresion);
@@ -32,3 +32,10 @@ if ($expresion =~ /^[\d\s+\-*\/\^().]+$/) {
 } else {
     print $cgi->p("Expresión inválida. Por favor, utiliza números y operadores válidos.");
 }
+# Imprimir el resultado
+if (defined $resultado) {
+    print $cgi->p("Resultado: $resultado");
+}
+
+# Finalizar el script
+print $cgi->end_html();
