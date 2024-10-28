@@ -5,4 +5,5 @@
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
 evaluar_expresion	cgi-bin/calculadora.pl	29;"	s
-calcular	cgi-bin/calculadora.pl	43;"	s
+infija_a_postfija	cgi-bin/calculadora.pl	36;"	s
+calcular	cgi-bin/calculadora.pl	80;"	s

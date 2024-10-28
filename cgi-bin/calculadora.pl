@@ -28,69 +28,80 @@ print $resultado;
 # Función para evaluar la expresión
 sub evaluar_expresion {
     my ($expresion) = @_;
+    my @postfix = infija_a_postfija($expresion);
+    return calcular(\@postfix);
+}
 
+# Convierte expresión infija a postfija utilizando el algoritmo de Shunting Yard
+sub infija_a_postfija {
+    my ($expresion) = @_;
     my @tokens = split(/(\D)/, $expresion);
     my @resultado;
+    my @operadores;
+
+    # Definir la precedencia de los operadores
+    my %precedencia = (
+        '+' => 1,
+        '-' => 1,
+        '*' => 2,
+        '/' => 2,
+        '^' => 3,
+    );
 
     foreach my $token (@tokens) {
-        next if $token =~ /^\s*$/;
-        push @resultado, $token;
+        next if $token =~ /^\s*$/;  # Ignorar espacios en blanco
+        if (looks_like_number($token)) {
+            push @resultado, $token;  # Si es un número, añadir a la salida
+        } elsif ($token eq '(') {
+            push @operadores, $token;  # Si es un paréntesis izquierdo, apilar
+        } elsif ($token eq ')') {
+            while (@operadores && $operadores[-1] ne '(') {
+                push @resultado, pop @operadores;
+            }
+            pop @operadores;  # Eliminar '(' de la pila
+        } else {
+            # Manejar los operadores
+            while (@operadores && exists $precedencia{$operadores[-1]} && 
+                   $precedencia{$operadores[-1]} >= $precedencia{$token}) {
+                push @resultado, pop @operadores;
+            }
+            push @operadores, $token;  # Apilar el operador actual
+        }
     }
 
-    return calcular(\@resultado);
+    # Vaciar la pila de operadores
+    while (@operadores) {
+        push @resultado, pop @operadores;
+    }
+
+    return @resultado;
 }
 
 sub calcular {
     my ($tokens) = @_;
+    my @pila;
 
-    # Manejo de operaciones de potencia
-    for (my $i = 0; $i < @$tokens; $i++) {
-        if ($tokens->[$i] eq '^') {
-            my $izquierda = $tokens->[$i - 1];
-            my $derecha = $tokens->[$i + 1];
+    foreach my $token (@$tokens) {
+        if (looks_like_number($token)) {
+            push @pila, $token;  # Si es un número, apilar
+        } else {
+            my $derecha = pop @pila;
+            my $izquierda = pop @pila;
 
-            if (looks_like_number($izquierda) && looks_like_number($derecha)) {
-                my $resultado = $izquierda ** $derecha;
-                splice @$tokens, $i - 1, 3, $resultado;
-                $i--;
+            if ($token eq '^') {
+                push @pila, $izquierda ** $derecha;
+            } elsif ($token eq '/') {
+                return "Error: No se puede dividir entre 0." if $derecha == 0;
+                push @pila, $izquierda / $derecha;
+            } elsif ($token eq '*') {
+                push @pila, $izquierda * $derecha;
+            } elsif ($token eq '-') {
+                push @pila, $izquierda - $derecha;
+            } elsif ($token eq '+') {
+                push @pila, $izquierda + $derecha;
             }
         }
     }
 
-    # Multiplicación y división
-    for my $operador ('*', '/') {
-        for (my $i = 0; $i <= $#$tokens; $i++) {
-            if ($tokens->[$i] eq $operador) {
-                my $izquierda = $tokens->[$i - 1];
-                my $derecha = $tokens->[$i + 1];
-
-                if (looks_like_number($izquierda) && looks_like_number($derecha)) {
-                    if ($operador eq '/' && $derecha == 0) {
-                        return "Error: No se puede dividir entre 0.";
-                    }
-                    my $resultado = eval "$izquierda $operador $derecha";
-                    splice @$tokens, $i - 1, 3, $resultado;
-                    $i--;
-                }
-            }
-        }
-    }
-
-    # Suma y resta
-    for my $operador ('+', '-') {
-        for (my $i = 0; $i <= $#$tokens; $i++) {
-            if ($tokens->[$i] eq $operador) {
-                my $izquierda = $tokens->[$i - 1];
-                my $derecha = $tokens->[$i + 1];
-
-                if (looks_like_number($izquierda) && looks_like_number($derecha)) {
-                    my $resultado = eval "$izquierda $operador $derecha";
-                    splice @$tokens, $i - 1, 3, $resultado;
-                    $i--;
-                }
-            }
-        }
-    }
-
-    return $tokens->[0];
+    return $pila[0];  # El resultado final estará en la cima de la pila
 }
